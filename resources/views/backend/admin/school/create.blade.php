@@ -15,7 +15,7 @@
 
     @include('backend.errors')
 
-    {!! Form::open(array('route' => 'admin.schools.store','method'=>'POST', 'files' => true)) !!}
+    {!! Form::open(array('route' => 'admin.schools.store', 'class'=>'form-horizontal', 'method'=>'POST', 'files' => true)) !!}
       @include('backend.admin.school.form')
     {!! Form::close() !!}
 

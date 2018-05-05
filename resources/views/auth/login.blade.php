@@ -1,15 +1,20 @@
-@extends('layouts.app')
+@extends('layouts.base')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
-
-                <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+                <div class="card-body">
+                    <div class="text-center">
+                        <br/>
+                        <h3><i class="fas  fa-graduation-cap" data-fa-transform="shrink-6"></i> Login</h3>
+                        <br/>
+                    </div>
+
 
                         <div class="form-group row">
                             <label for="email" class="col-sm-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
@@ -54,14 +59,25 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
-
+                            </div>
+                        </div>
+                    
+                </div>
+                <div class="card-footer">
+                        <div class="form-group row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                Teachers 
+                                <a class="btn btn-link" href="{{ route('register') }}">
+                                    Register here
+                                </a>
                                 <!--<a style="display:none;" class="btn btn-link" href="{{ route('password.request') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>-->
                             </div>
                         </div>
-                    </form>
+
                 </div>
+                </form>
             </div>
         </div>
     </div>

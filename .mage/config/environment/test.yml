@@ -1,0 +1,21 @@
+#test
+deployment:
+  user: root
+  from: ./
+  to: /home/admin/web/quizly.theseencompany.ga
+  excludes:
+releases:
+  enabled: true
+  max: 10
+  symlink: current
+  directory: releases
+hosts:
+  - 128.199.165.120
+tasks:
+  pre-deploy:
+  on-deploy:
+  post-release:
+  post-deploy:
+    - environment: { env: test }
+    - migrations: { env: test }
+

@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,18 +25,30 @@ Route::get('/verify_login', 'HomeController@verify_login')->name('verify_login')
 # Admin
 Route::get('/admin', 'BackendAdminHomeController@index')->name('admin_home');
 
-Route::group( ['prefix' => 'admin', 'as' => 'admin.'], function () {
-    Route::resource('/teachers', 'BackendAdminTeacherController');
-    Route::post('/teachers/statuses', 'BackendAdminTeacherController@statuses')->name('teachers.statuses');
-    Route::get('/teachers/change_password/{teacher_id}', 'BackendAdminTeacherController@change_password')->name('teachers.change_password');
-    Route::post('/teachers/process_change_password', 'BackendAdminTeacherController@process_change_password')->name('teachers.process_change_password');
+Route::group( ['prefix' => 'admin', 'middleware'=>'authorize.roles:admin', 'as' => 'admin.'], function () {
+    Route::resource('/teachers', 'Admin\TeacherController');
+    Route::post('/teachers/update-status', 'Admin\TeacherController@updateStatus')->name('teachers.update-status');
+    Route::get('/teachers/change_password/{teacher_id}', 'Admin\TeacherController@change_password')->name('teachers.change_password');
+    Route::post('/teachers/process_change_password', 'Admin\TeacherController@process_change_password')->name('teachers.process_change_password');
 
-    Route::resource('/schools', 'BackendAdminSchoolController');
-    Route::post('/schools/statuses', 'BackendAdminSchoolController@statuses')->name('schools.statuses');
-    Route::get('/schools/mass_upload/1', 'BackendAdminSchoolController@mass_upload')->name('schools.mass_upload');
-    Route::post('/schools/store_mass_upload', 'BackendAdminSchoolController@store_mass_upload')->name('schools.store_mass_upload');
+    Route::post('/schools/update-status', 'Admin\SchoolController@updateStatus')->name('schools.update-status');
+    Route::get('/schools/import', 'Admin\SchoolController@import')->name('schools.import');
+    Route::post('/schools/import', 'Admin\SchoolController@postImport')->name('schools.post-import');
+    Route::resource('/schools', 'Admin\SchoolController');
+    Route::get('/quizzes/{id}/publish', 'Admin\QuizController@publish')->name('quizzes.publish');
+    Route::get('/quizzes/{id}/unpublish', 'Admin\QuizController@unpublish')->name('quizzes.unpublish');
+    Route::resource('/quizzes', 'Admin\QuizController');
 });
 
+Route::group( ['prefix' => 'school', 'middleware'=>'authorize.roles:teacher', 'as' => 'teacher.'], function () {
+    Route::get('/', ['uses'=>'Teacher\HomeController@index', 'as'=>'home']);
+    Route::resource('/students', 'Teacher\StudentController');
+});
+
+
+Route::group( ['prefix' => 'app', 'middleware'=>'authorize.roles:student', 'as' => 'student.'], function () {
+    Route::get('/', [ 'uses'=>'Student\HomeController@home', 'as'=>'home']);
+});
 
 
 /*Route::get('test_email', function () {

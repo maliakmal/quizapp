@@ -3,21 +3,20 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Teachers</h2>
-
+            <h1>Teachers</h1>
+            <div class="well">
+            <div class="pull-right">
+                <a class="btn btn-default" href="{{ route('admin.teachers.create') }}"> New Teacher</a>
+            </div>
                 <div>
                 {!! Form::open(['method'=>'GET','url'=>'admin/teachers','role'=>'search'])  !!}
-                    <input type="text" name="search" value="{{ app('request')->input('search') }}" id="search">
+                    <input type="text" name="search" value="{{ isset($params['search'])?$params['search']:'' }}" id="search">
                     <input type="submit" name="submit" value="Search">
                     <input type="button" name="reset" value="Reset" onclick="window.location='{{ route('admin.teachers.index') }}'">
                 {!! Form::close() !!}
-                </div><br>
-            </div>
+                </div>
 
-            <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('admin.teachers.create') }}"> New Teacher</a>
-            </div><br>
+            </div>
         </div>
     </div>
 
@@ -36,34 +35,29 @@
             <th width="250px">Action</th>
         </tr>
 
-    @foreach ($items as $key => $item)
+    @foreach ($teachers as $key => $teacher)
 
     <tr>
         <td>
-            @if ($item->school_name != null)
-                {{ $item->school_name->name }}
-            @endif
+            {{ ($teacher->school) ? $teacher->school->name:'Unknown' }}
         </td>
-        <td>{{ $item->first_name.' '.$item->last_name }}</td>
-        <td>{{ $item->email }}</td>
+        <td>{{ $teacher->first_name.' '.$teacher->last_name }}</td>
+        <td>{{ $teacher->email }}</td>
         <td>
-            <?php
-                $num = ++$i;
-                $form_name = "form_".$num;
-            ?>
-            {!! Form::open(["onchange" => "$('#$form_name').submit()", 'route' => ['admin.teachers.statuses', $item->id],'style'=>'display:inline', 'id' => $form_name ]) !!}
 
-                {!! Form::hidden('teacher_id', $item->id) !!}
+            {!! Form::open(['route' => ['admin.teachers.update-status'],'style'=>'display:inline' ]) !!}
+
+                {!! Form::hidden('teacher_id', $teacher->id) !!}
                 <?php
-                $status_arr = array('New','Approved', 'Declined');
+                $statuses = array('New','Approved', 'Declined');
                 ?>
-                {!! Form::select('status', $status_arr, $item->status, array('id' => 'status','class' => 'form-control')) !!}
+                {!! Form::select('status', $statuses, $teacher->status, array('id' => 'status','class' => 'status-selectors form-control')) !!}
     
             {!! Form::close() !!}        
         </td>
         <td>
-            <a class="btn btn-primary" href="{{ route('admin.teachers.edit',$item->id) }}">Edit</a>
-            <a class="btn btn-primary" href="{{ route('admin.teachers.change_password',$item->id) }}">Change Password</a>
+            <a class="btn btn-primary" href="{{ route('admin.teachers.edit',$teacher->id) }}">Edit</a>
+            <a class="btn btn-primary" href="{{ route('admin.teachers.change_password',$teacher->id) }}">Change Password</a>
         </td>
     </tr>
 
@@ -71,12 +65,18 @@
 
     </table>
 
-    {!! $items->appends(['search' => $search])->render() !!}
+    {!! $teachers->appends($params)->render() !!}
 
-    <script>
-      function validate_form(form) {
-        return confirm('Do you really want to delete this entry?');
-      }
+
+@endsection
+@section('js')
+    <script type="text/javascript">
+        $(function(){
+            $('.status-selectors').change(function(){
+                $(this).parents('form').first().submit();
+            })
+        })
+
     </script>
 
 @endsection

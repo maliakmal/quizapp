@@ -15,7 +15,7 @@
 
     @include('backend.errors')
 
-    {!! Form::model($item, ['method' => 'PATCH', 'files' => true, 'route' => ['admin.schools.update', $item->id]]) !!}
+    {!! Form::model($school, ['method' => 'PATCH', 'class'=>'form-horizontal',  'files' => true, 'route' => ['admin.schools.update', $school->id]]) !!}
       @include('backend.admin.school.form')
     {!! Form::close() !!}
 

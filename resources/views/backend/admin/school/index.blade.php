@@ -1,26 +1,25 @@
 @extends('layouts.backend')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Schools</h2>
+  <div class="row">
+      <div class="col-lg-12 margin-tb">
+        <h1>Schools</h1>
+        <div class="well">
+<div class="pull-right">
+              <a class="btn btn-success" href="{{ route('admin.schools.create') }}"> New School</a>
+              <a class="btn btn-success" href="{{ route('admin.schools.import') }}"> Mass Upload</a>
+          </div>
+              <div>
+              {!! Form::open(['method'=>'GET','url'=>'admin/schools','role'=>'search'])  !!}
+                  <input type="text" name="search" value="{{ isset($params['search'])?$params['search']:'' }}" id="search">
+                  <input type="submit" name="submit" value="Search">
+                  <input type="button" name="reset" value="Reset" onclick="window.location='{{ route('admin.schools.index') }}'">
+              {!! Form::close() !!}
+              </div>
+          </div>
 
-                <div>
-                {!! Form::open(['method'=>'GET','url'=>'admin/schools','role'=>'search'])  !!}
-                    <input type="text" name="search" value="{{ app('request')->input('search') }}" id="search">
-                    <input type="submit" name="submit" value="Search">
-                    <input type="button" name="reset" value="Reset" onclick="window.location='{{ route('admin.schools.index') }}'">
-                {!! Form::close() !!}
-                </div><br>
-            </div>
-
-            <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('admin.schools.create') }}"> New School</a>
-                <a class="btn btn-success" href="{{ route('admin.schools.mass_upload') }}"> Mass Upload</a>
-            </div><br>
-        </div>
-    </div>
+      </div>
+  </div>
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -37,44 +36,50 @@
             <th width="200px">Action</th>
         </tr>
 
-    @foreach ($items as $key => $item)
+    @foreach ($schools as $school)
 
     <tr>
-        <td>
-            {{ $item->name }}
-        </td>
-        <td>{{ $item->city }}</td>
-        <td>{{ $item->country }}</td>
-        <td>
-            <?php
-                $num = ++$i;
-                $form_name = "form_".$num;
-            ?>
-            {!! Form::open(["onchange" => "$('#$form_name').submit()", 'route' => ['admin.schools.statuses', $item->id],'style'=>'display:inline', 'id' => $form_name ]) !!}
+      <td>
+        {{ $school->name }}
+      </td>
+      <td>{{ $school->city }}</td>
+      <td>{{ $school->country }}</td>
+      <td>
+        {!! Form::open(['route' => ['admin.schools.update-status', $school->id],'style'=>'display:inline']) !!}
+          {!! Form::hidden('school_id', $school->id) !!}
+          <?php
+          $statuses = array('1'=>'Enabled','0'=>'Disabled');
+          ?>
+          {!! Form::select('status', $statuses, $school->status, array('id' => 'status','class' => 'status-selectors form-control')) !!}
 
-                {!! Form::hidden('school_id', $item->id) !!}
-                <?php
-                $status_arr = array('1'=>'Enabled','0'=>'Disabled');
-                ?>
-                {!! Form::select('status', $status_arr, $item->status, array('id' => 'status','class' => 'form-control')) !!}
-    
-            {!! Form::close() !!}        
-        </td>
-        <td>
-            <a class="btn btn-primary" href="{{ route('admin.schools.edit',$item->id) }}">Edit</a>
-        </td>
+        {!! Form::close() !!}        
+      </td>
+      <td>
+          <a class="btn btn-primary" href="{{ route('admin.schools.edit',$school->id) }}">Edit</a>
+      </td>
     </tr>
 
     @endforeach
 
     </table>
 
-    {!! $items->appends(['search' => $search])->render() !!}
+    {!! $schools->appends($params)->render() !!}
 
     <script>
       function validate_form(form) {
         return confirm('Do you really want to delete this entry?');
       }
+    </script>
+
+@endsection
+@section('js')
+    <script type="text/javascript">
+        $(function(){
+            $('.status-selectors').change(function(){
+                $(this).parents('form').first().submit();
+            })
+        })
+
     </script>
 
 @endsection

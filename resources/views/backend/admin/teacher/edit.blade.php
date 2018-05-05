@@ -15,9 +15,9 @@
 
     @include('backend.errors')
 
-    {!! Form::model($item, ['method' => 'PATCH', 'files' => true, 'route' => ['admin.teachers.update', $item->id]]) !!}
+    {!! Form::model($teacher, ['method' => 'PATCH', 'files' => true, 'class'=>'form-horizontal',  'route' => ['admin.teachers.update', $teacher->id]]) !!}
       @include('backend.admin.teacher.form')
-      {!! Form::hidden('id', $item->id) !!}
+      {!! Form::hidden('id', $teacher->id) !!}
     {!! Form::close() !!}
 
 @endsection

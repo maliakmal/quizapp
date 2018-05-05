@@ -39,7 +39,7 @@ class HomeController extends Controller
     
        $user = User::join('role_user', 'users.id', '=', 'role_user.user_id')
        ->where('users.id', $user_id)
-       ->select('users.id','users.first_name','users.last_name','users.email','users.status','users.school', 'role_id')
+       ->select('users.id','users.first_name','users.last_name','users.email','users.status','users.school_id', 'role_id')
        ->first();
 
        if ($user->role_id != '1') {
