@@ -19,6 +19,7 @@ class QuestionController extends Controller
   
     public function index(Request $request){
         $params = [];
+        
         $params['search'] = $request->input('search');
         $params['quiz_id'] = $request->input('quiz_id');
 
@@ -53,6 +54,10 @@ class QuestionController extends Controller
     public function store(Request $request){
         $data = $request->all();
         $question = Question::create($data['data']);
+
+        $quiz = Quiz::find($question->quiz_id);
+        $quiz->resetTotalScore();
+        $quiz->save();
         return $question;
     }
   
@@ -60,7 +65,11 @@ class QuestionController extends Controller
     public function update(Request $request, $id){
         $data = $request->all();
 
-        $question = Question::find($id)->update($data['data']);
+        $question = Question::find($id);
+        $question->update($data['data']);
+        $quiz = Quiz::find($question->quiz_id);
+        $quiz->resetTotalScore();
+        $quiz->save();
     } 
 
     public function show($id)
@@ -72,7 +81,11 @@ class QuestionController extends Controller
     public function destroy($id)
     {
         $question = Question::find($id);
+        $quiz = Quiz::find($question->quiz_id);
         $question->delete();
+        $quiz->resetTotalScore();
+        $quiz->save();
+
 
     }
 }

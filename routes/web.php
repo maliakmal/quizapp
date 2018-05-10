@@ -48,6 +48,8 @@ Route::group( ['prefix' => 'school', 'middleware'=>'authorize.roles:teacher', 'a
 
 Route::group( ['prefix' => 'app', 'middleware'=>'authorize.roles:student', 'as' => 'student.'], function () {
     Route::get('/', [ 'uses'=>'Student\HomeController@home', 'as'=>'home']);
+    Route::post('/quiz/start', [ 'uses'=>'Student\QuizController@start', 'as'=>'quizzes.start']);
+    Route::resource('/quizzes', 'Student\QuizController');
 });
 
 

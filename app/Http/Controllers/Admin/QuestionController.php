@@ -56,12 +56,16 @@ class QuestionController extends Controller
 
     public function store(Request $request){
         $question = Question::create($request->all());
+        $question->quiz->resetTotalScore();
+        $question->quiz->save();
         return $question;
     }
   
   
     public function update(Request $request, $id){
         $question = Question::find($id)->update($request->all());
+        $question->quiz->resetTotalScore();
+        $question->quiz->save();
     } 
 
     public function show($id)

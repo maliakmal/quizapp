@@ -4,6 +4,7 @@ deployment:
   from: ./
   to: /home/admin/web/quizly.theseencompany.ga
   excludes:
+    - node_modules
 releases:
   enabled: true
   max: 10
